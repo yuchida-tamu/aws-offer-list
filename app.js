@@ -45,15 +45,13 @@ const questionOperation = {
 
 async function run() {
   try {
-    const { region, service } = await inquirer.prompt([
-      questionRegion,
-      questionService,
-    ]);
+    const { region } = await inquirer.prompt([questionRegion]);
 
-    const { instance, operation } = await inquirer.prompt([
-      questionInstance,
-      questionOperation,
-    ]);
+    const { service } = await inquirer.prompt([questionService]);
+
+    const { instance } = await inquirer.prompt([questionInstance]);
+
+    const { operation } = await inquirer.prompt([questionOperation]);
 
     await checkAPI(service, region, operation, instance);
   } catch (err) {
