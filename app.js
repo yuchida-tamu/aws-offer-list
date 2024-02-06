@@ -62,34 +62,25 @@ inquirer
     console.error("Something went wrong: ", err);
   });
 
-function checkAPI(awsService, region, operation, instanceType) {
-  Promise.resolve()
-    .then(() => {
-      return api.get(
-        `/offers/v1.0/aws/${awsService}/current/region_index.json`
-      );
-    })
-    .then((response) => {
-      const currentVersionUrl = response.data.regions[region].currentVersionUrl;
-      return api.get(currentVersionUrl);
-    })
-    .then((result) => {
-      const products = result.data.products;
-      const answer = [];
+async function checkAPI(awsService, region, operation, instanceType) {
+  try {
+    const regionIndexResponse = await api.get(
+      `/offers/v1.0/aws/${awsService}/current/region_index.json`
+    );
+    const currentVersionUrl =
+      regionIndexResponse.data.regions[region].currentVersionUrl;
+    const currentVersionResponse = await api.get(currentVersionUrl);
+    const products = currentVersionResponse.data.products;
 
-      for (key in products) {
-        let product = products[key];
-        if (
-          product.attributes.instanceType === instanceType &&
-          product.attributes.operation === operation
-        ) {
-          answer.push(product);
-        }
-      }
-      console.log(answer);
-    })
-    .catch((err) => {
-      console.log(err);
-      process.exit(1);
-    });
+    const answer = Object.values(products).filter(
+      (product) =>
+        product.attributes.instanceType === instanceType &&
+        product.attributes.operation === operation
+    );
+
+    console.log(answer);
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
 }
