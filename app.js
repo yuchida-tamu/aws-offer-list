@@ -1,15 +1,9 @@
-const readline = require("readline");
 const inquirer = require("inquirer");
 const regionOptions = require("./regions");
 const axios = require("axios");
 let region, awsService, instanceType, operation;
 region = "ap-northeast-1";
 awsService = "AmazonRDS";
-
-let queryParams = {
-  region: "ap-northeast-1",
-  service: "AmazonRDS",
-};
 
 const api = axios.create({
   baseURL: `https://pricing.us-east-1.amazonaws.com/`,
