@@ -43,24 +43,23 @@ const questionOperation = {
     "オペレーション名を入力してください。　Please, enter an operation name",
 };
 
-inquirer
-  .prompt([
-    questionRegion,
-    questionService,
-    questionInstance,
-    questionOperation,
-  ])
-  .then((answers) => {
-    checkAPI(
-      answers.service,
-      answers.region,
-      answers.operation,
-      answers.instance
-    );
-  })
-  .catch((err) => {
+async function run() {
+  try {
+    const { region } = await inquirer.prompt([questionRegion]);
+
+    const { service } = await inquirer.prompt([questionService]);
+
+    const { instance } = await inquirer.prompt([questionInstance]);
+
+    const { operation } = await inquirer.prompt([questionOperation]);
+
+    await checkAPI(service, region, operation, instance);
+  } catch (err) {
     console.error("Something went wrong: ", err);
-  });
+  }
+}
+
+run();
 
 function checkAPI(awsService, region, operation, instanceType) {
   Promise.resolve()
